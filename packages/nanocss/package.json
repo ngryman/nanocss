@@ -1,0 +1,12 @@
+{
+  "name": "nanocss",
+  "version": "0.0.0",
+  "main": "index.js",
+  "module": "src/index.js",
+  "author": "Nicolas Gryman <ngryman@gmail.com> (http://ngryman.sh/)",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "nyc": "^11.3.0"
+  }
+}

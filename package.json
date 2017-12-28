@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@nanocss/root",
+  "workspaces": [
+    "packages/*"
+  ]
+}
