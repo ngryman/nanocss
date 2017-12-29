@@ -7,10 +7,10 @@ const createStyleSheet = () => {
   return style.sheet
 }
 
-export default function createCSSInjector() {
+export default function DOMInjector() {
   const styleSheet = createStyleSheet()
 
-  return function injectCSSRule(rule) {
-    styleSheet.insertRule(rule)
+  return function injectToDOM(cssRule) {
+    styleSheet.insertRule(cssRule)
   }
 }

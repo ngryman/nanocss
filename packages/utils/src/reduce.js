@@ -1,4 +1,6 @@
-import stringAggregator from './stringAggregator'
+import appendStringWith from './append-string-with'
+
+const appendString = appendStringWith('')
 
 const reduceArray = (array, reducer, aggregator, initial) => {
   let reduced = initial
@@ -16,7 +18,7 @@ const reduceObject = (object, reducer, aggregator, initial) => {
   return reduced
 }
 
-const reduce = (collection, reducer, aggregator = stringAggregator(''), initial = '') => {
+const reduce = (collection, reducer, aggregator = appendString, initial = '') => {
   if (Array.isArray(collection)) {
     return reduceArray(collection, reducer, aggregator,  initial)
   }

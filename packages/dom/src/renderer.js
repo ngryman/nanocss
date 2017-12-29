@@ -1,51 +1,44 @@
 import {
-  createSelectorGenerator,
-  partial,
-  reduce,
-  ruleReducer,
-  stringAggregator,
-  toCSSDeclaration,
-  toCSSRule,
-  uniqueKeyFor
+  appendStringWith,
+  getCacheKey,
+  reduceRuleWith
 } from '@nanocss/utils'
+import {
+  CSSSelectorGenerator,
+  toCSSDeclarations,
+  toCSSRule
+} from '@nanocss/utils/css'
 
-import createCSSInjector from './createCSSInjector'
+import DOMInjector from './dom-injector'
+
+const appendWithSpace = appendStringWith(' ')
 
 export default function createRenderer() {
   const cache = new Map()
-  const generateSelector = createSelectorGenerator()
-  const injectCSSRule = createCSSInjector()
-
-  const renderDeclarations = (rule, props, isDynamic) => {
-    return reduce(
-      rule,
-      ruleReducer(props, toCSSDeclaration, isDynamic)
-    )
-  }
+  const generateCSSSelector = CSSSelectorGenerator()
+  const injectToDOM = DOMInjector()
 
   const renderRule = (rule, props, isDynamic) => {
-    const cacheKey = uniqueKeyFor(rule, props, isDynamic)
+    const cacheKey = getCacheKey(rule, props, isDynamic)
     if (!cacheKey) return ''
 
     const cachedSelector = cache.get(cacheKey)
     if (cachedSelector) return cachedSelector
 
-    const declarations = renderDeclarations(rule, props, isDynamic)
-    const selector = generateSelector()
+    const declarations = toCSSDeclarations(rule, props, isDynamic)
+    const selector = generateCSSSelector()
     const cssRule = toCSSRule(selector, declarations)
 
-    injectCSSRule(cssRule)
-
+    injectToDOM(cssRule)
     cache.set(cacheKey, selector)
 
     return selector
   }
 
   return function render(rule, props = {}) {
-    return reduce(
-      [false, true],
-      partial(renderRule, rule, props),
-      stringAggregator(' ')
-    )
+    const staticSelector = renderRule(rule, props, false)
+    const dynamicSelector = renderRule(rule, props, true)
+
+    return appendWithSpace(staticSelector, dynamicSelector)
   }
 }
